@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 4. Reveal Elements on Scroll
-  const revealElements = document.querySelectorAll('.service-card, .about-content, .info-item, .contact-form-wrapper');
+  const revealElements = document.querySelectorAll('.service-card, .system-card, .about-content, .info-item, .contact-form-wrapper');
   
   const revealCallback = (entries, observer) => {
       entries.forEach(entry => {
@@ -93,4 +93,40 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.transition = `opacity 0.6s ease-out ${index * 0.1}s, transform 0.6s ease-out ${index * 0.1}s`;
       observer.observe(el);
   });
+
+  // 5. System Showcase Carousel Controller (activates automatically once uncommented in index.html)
+  const systemCarousel = document.getElementById('systemCarousel');
+  if (systemCarousel) {
+      const track = systemCarousel.querySelector('.carousel-track');
+      const slides = Array.from(systemCarousel.querySelectorAll('.carousel-slide'));
+      const prevBtn = systemCarousel.querySelector('.prev-btn');
+      const nextBtn = systemCarousel.querySelector('.next-btn');
+      const dots = Array.from(systemCarousel.querySelectorAll('.dot'));
+      let currentIndex = 0;
+
+      const updateCarousel = (index) => {
+          if (slides.length === 0) return;
+          if (index < 0) {
+              index = slides.length - 1;
+          } else if (index >= slides.length) {
+              index = 0;
+          }
+          currentIndex = index;
+          track.style.transform = `translateX(-${currentIndex * 100}%)`;
+          
+          dots.forEach((dot, i) => {
+              dot.classList.toggle('active', i === currentIndex);
+          });
+      };
+
+      if (nextBtn) {
+          nextBtn.addEventListener('click', () => updateCarousel(currentIndex + 1));
+      }
+      if (prevBtn) {
+          prevBtn.addEventListener('click', () => updateCarousel(currentIndex - 1));
+      }
+      dots.forEach((dot, i) => {
+          dot.addEventListener('click', () => updateCarousel(i));
+      });
+  }
 });
